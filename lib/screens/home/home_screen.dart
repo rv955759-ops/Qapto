@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:qapto_app/screens/auth/login_screen.dart';
+
 import 'package:qapto_app/screens/offers/add_capacity_offer_screen.dart';
 import 'package:qapto_app/screens/offers/my_offers_screen.dart';
+
 import 'package:qapto_app/screens/requests/add_capacity_request_screen.dart';
 import 'package:qapto_app/screens/requests/my_requests_screen.dart';
+
 import 'package:qapto_app/screens/matches/view_matches_screen.dart';
 
 import 'package:qapto_app/screens/finance/admin_earnings_screen.dart';
 import 'package:qapto_app/screens/finance/supplier_earnings_screen.dart';
 import 'package:qapto_app/screens/finance/buyer_spending_screen.dart';
+
+import 'package:qapto_app/screens/deals/my_deals_screen.dart';
 
 import 'package:qapto_app/app_session.dart';
 
@@ -19,18 +24,37 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
       appBar: AppBar(
-        title: const Text('QAPTO Dashboard'),
+
+        title: const Text(
+          'QAPTO Dashboard',
+        ),
+
         actions: [
+
           IconButton(
-            icon: const Icon(Icons.logout),
+
+            icon: const Icon(
+              Icons.logout,
+            ),
+
             onPressed: () async {
-              await Supabase.instance.client.auth.signOut();
+
+              await Supabase.instance.client
+                  .auth
+                  .signOut();
 
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
+
+                MaterialPageRoute(
+                  builder: (_) =>
+                      const LoginScreen(),
+                ),
+
                 (route) => false,
               );
             },
@@ -39,141 +63,260 @@ class HomeScreen extends StatelessWidget {
       ),
 
       body: ListView(
+
         padding: const EdgeInsets.all(16),
+
         children: [
 
           const Text(
+
             'Dashboard',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
           ),
 
           const SizedBox(height: 20),
 
-          // OFFERS
-          const Text("Offers", style: TextStyle(fontWeight: FontWeight.bold)),
+          // ================= OFFERS =================
+
+          const Text(
+            "Offers",
+
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
           const SizedBox(height: 10),
 
           ElevatedButton(
+
             onPressed: () {
+
               Navigator.push(
                 context,
+
                 MaterialPageRoute(
-                  builder: (context) => const AddCapacityOfferScreen(),
+                  builder: (context) =>
+                      const AddCapacityOfferScreen(),
                 ),
               );
             },
-            child: const Text('Add Capacity Offer'),
+
+            child: const Text(
+              'Add Capacity Offer',
+            ),
           ),
 
           const SizedBox(height: 8),
 
           ElevatedButton(
+
             onPressed: () {
+
               Navigator.push(
                 context,
+
                 MaterialPageRoute(
-                  builder: (context) => MyOffersScreen(), // ✅ FIX
+                  builder: (context) =>
+                      MyOffersScreen(),
                 ),
               );
             },
-            child: const Text('My Offers'),
+
+            child: const Text(
+              'My Offers',
+            ),
           ),
 
           const SizedBox(height: 20),
 
-          // REQUESTS
-          const Text("Requests", style: TextStyle(fontWeight: FontWeight.bold)),
+          // ================= REQUESTS =================
+
+          const Text(
+            "Requests",
+
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
           const SizedBox(height: 10),
 
           ElevatedButton(
+
             onPressed: () {
+
               Navigator.push(
                 context,
+
                 MaterialPageRoute(
-                  builder: (context) => const AddCapacityRequestScreen(),
+                  builder: (context) =>
+                      const AddCapacityRequestScreen(),
                 ),
               );
             },
-            child: const Text('Add Capacity Request'),
+
+            child: const Text(
+              'Add Capacity Request',
+            ),
           ),
 
           const SizedBox(height: 8),
 
           ElevatedButton(
+
             onPressed: () {
+
               Navigator.push(
                 context,
+
                 MaterialPageRoute(
-                  builder: (context) => MyRequestsScreen(), // ✅ FIX
+                  builder: (context) =>
+                      MyRequestsScreen(),
                 ),
               );
             },
-            child: const Text('My Requests'),
+
+            child: const Text(
+              'My Requests',
+            ),
           ),
 
           const SizedBox(height: 20),
 
-          // FINANCE
-          const Text("Finance", style: TextStyle(fontWeight: FontWeight.bold)),
+          // ================= FINANCE =================
+
+          const Text(
+            "Finance",
+
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
           const SizedBox(height: 10),
 
           ElevatedButton(
+
             onPressed: () {
+
               Navigator.push(
                 context,
+
                 MaterialPageRoute(
-                  builder: (context) => const SupplierEarningsScreen(),
+                  builder: (context) =>
+                      const SupplierEarningsScreen(),
                 ),
               );
             },
-            child: const Text("My Earnings"),
+
+            child: const Text(
+              "My Earnings",
+            ),
           ),
 
           const SizedBox(height: 8),
 
           ElevatedButton(
+
             onPressed: () {
+
               Navigator.push(
                 context,
+
                 MaterialPageRoute(
-                  builder: (context) => const BuyerSpendingScreen(),
+                  builder: (context) =>
+                      const BuyerSpendingScreen(),
                 ),
               );
             },
-            child: const Text("My Spending"),
+
+            child: const Text(
+              "My Spending",
+            ),
           ),
 
           const SizedBox(height: 8),
 
           if (AppSession.role == 'admin')
+
             ElevatedButton(
+
               onPressed: () {
+
                 Navigator.push(
                   context,
+
                   MaterialPageRoute(
-                    builder: (context) => const AdminEarningsScreen(),
+                    builder: (context) =>
+                        const AdminEarningsScreen(),
                   ),
                 );
               },
-              child: const Text("Admin Earnings"),
+
+              child: const Text(
+                "Admin Earnings",
+              ),
             ),
 
           const SizedBox(height: 20),
 
-          // MATCHES
-          const Text("Matches", style: TextStyle(fontWeight: FontWeight.bold)),
+          // ================= MATCHES =================
+
+          const Text(
+            "Matches",
+
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
           const SizedBox(height: 10),
 
           OutlinedButton(
+
             onPressed: () {
+
               Navigator.push(
                 context,
+
                 MaterialPageRoute(
-                  builder: (context) => const ViewMatchesScreen(),
+                  builder: (context) =>
+                      const ViewMatchesScreen(),
                 ),
               );
             },
-            child: const Text('View Matches'),
+
+            child: const Text(
+              'View Matches',
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          // ================= MY DEALS =================
+
+          ElevatedButton(
+
+            onPressed: () {
+
+              Navigator.push(
+                context,
+
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const MyDealsScreen(),
+                ),
+              );
+            },
+
+            child: const Text(
+              'My Deals',
+            ),
           ),
         ],
       ),
