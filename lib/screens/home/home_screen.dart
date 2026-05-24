@@ -29,10 +29,21 @@ class HomeScreen extends StatelessWidget {
 
       appBar: AppBar(
 
-        title: const Text(
-          'QAPTO Dashboard',
-        ),
+  title: Row(
+  children: [
 
+    Image.asset(
+      'assets/images/logo.png',
+      height: 35,
+    ),
+
+    const SizedBox(width: 10),
+
+    const Text(
+      'QAPTO Dashboard',
+    ),
+  ],
+  ),
         actions: [
 
           IconButton(

@@ -1,108 +1,209 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class BuyerSpendingScreen extends StatefulWidget {
-  const BuyerSpendingScreen({super.key});
+class BuyerSpendingScreen
+    extends StatefulWidget {
+
+  const BuyerSpendingScreen({
+    super.key,
+  });
 
   @override
-  State<BuyerSpendingScreen> createState() =>
-      _BuyerSpendingScreenState();
+  State<BuyerSpendingScreen>
+      createState() =>
+          _BuyerSpendingScreenState();
 }
 
-class _BuyerSpendingScreenState extends State<BuyerSpendingScreen> {
+class _BuyerSpendingScreenState
+    extends State<BuyerSpendingScreen> {
+
   List data = [];
+
   bool isLoading = true;
 
   @override
   void initState() {
+
     super.initState();
+
     fetchSpending();
   }
 
   Future<void> fetchSpending() async {
-    final user = Supabase.instance.client.auth.currentUser;
 
-    if (user == null) return;
+    final user =
+        Supabase.instance.client
+            .auth
+            .currentUser;
 
-    // 1️⃣ Get all matches
-    final matches = await Supabase.instance.client
-        .from('matches_log')
-        .select();
+    if (user == null) {
 
-    List temp = [];
+      setState(() {
+        isLoading = false;
+      });
 
-    for (var match in matches) {
-      // 2️⃣ Get request for THIS user only
-      final request = await Supabase.instance.client
-          .from('capacity_requests')
-          .select()
-          .eq('id', match['request_id'])
-          .eq('user_id', user.id) // 🔥 IMPORTANT
-          .maybeSingle();
-
-      if (request != null) {
-        temp.add({
-          'machine': request['machine_type_needed'],
-          'location': request['location'],
-          'amount': match['total_amount'] ?? 0,
-          'status': match['payment_status'],
-        });
-      }
+      return;
     }
 
-    setState(() {
-      data = temp;
-      isLoading = false;
-    });
+    try {
+
+      final matches =
+          await Supabase.instance.client
+              .from('matches_log')
+              .select()
+              .eq(
+                'buyer_id',
+                user.id,
+              );
+
+      List temp = [];
+
+      for (var match in matches) {
+
+        final offer =
+            await Supabase.instance.client
+                .from('capacity_offers')
+                .select()
+                .eq(
+                  'id',
+                  match['offer_id'],
+                )
+                .maybeSingle();
+
+        if (offer != null) {
+
+          temp.add({
+
+            'machine':
+                offer['machine_type']
+                    ?? 'Machine',
+
+            'location':
+                offer['location']
+                    ?? 'Unknown',
+
+            'amount':
+                match['total_amount']
+                    ?? 0,
+
+            'status':
+                match['payment_status']
+                    ?? 'pending',
+          });
+        }
+      }
+
+      setState(() {
+
+        data = temp;
+
+        isLoading = false;
+      });
+
+    } catch (e) {
+
+      print("BUYER ERROR: $e");
+
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("My Spending")),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : data.isEmpty
-              ? const Center(child: Text("No spending yet"))
-              : ListView(
-                  padding: const EdgeInsets.all(12),
-                  children: [
-                    // HEADER
-                    const Row(
-                      children: [
-                        Expanded(child: Text("Machine")),
-                        Expanded(child: Text("Location")),
-                        Expanded(child: Text("Amount")),
-                        Expanded(child: Text("Status")),
-                      ],
-                    ),
-                    const Divider(),
 
-                    // DATA
-                    ...data.map((item) => Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              children: [
-                                Expanded(child: Text(item['machine'])),
-                                Expanded(child: Text(item['location'])),
-                                Expanded(
-                                    child: Text("₹${item['amount']}")),
-                                Expanded(
-                                  child: Text(
-                                    item['status'],
-                                    style: TextStyle(
-                                      color: item['status'] == 'paid'
-                                          ? Colors.green
-                                          : Colors.orange,
-                                    ),
-                                  ),
-                                ),
-                              ],
+    return Scaffold(
+
+      appBar: AppBar(
+        title: const Text(
+          "My Spending",
+        ),
+      ),
+
+      body: isLoading
+
+          ? const Center(
+              child:
+                  CircularProgressIndicator(),
+            )
+
+          : data.isEmpty
+
+              ? const Center(
+                  child: Text(
+                    "No spending yet",
+                  ),
+                )
+
+              : ListView.builder(
+
+                  padding:
+                      const EdgeInsets.all(12),
+
+                  itemCount: data.length,
+
+                  itemBuilder:
+                      (context, index) {
+
+                    final item = data[index];
+
+                    return Card(
+
+                      child: Padding(
+
+                        padding:
+                            const EdgeInsets.all(
+                                12),
+
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment
+                                  .start,
+
+                          children: [
+
+                            Text(
+                              item['machine'],
+
+                              style:
+                                  const TextStyle(
+                                fontWeight:
+                                    FontWeight.bold,
+
+                                fontSize: 18,
+                              ),
                             ),
-                          ),
-                        )),
-                  ],
+
+                            const SizedBox(
+                                height: 6),
+
+                            Text(
+                              "Location: ${item['location']}",
+                            ),
+
+                            Text(
+                              "Amount: ₹${item['amount']}",
+                            ),
+
+                            Text(
+                              "Status: ${item['status']}",
+
+                              style: TextStyle(
+                                color:
+                                    item['status'] ==
+                                            'confirmed'
+
+                                        ? Colors.green
+
+                                        : Colors.orange,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
     );
   }

@@ -88,15 +88,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+
+    return Scaffold(
+
       body: Center(
-        child: Text(
-          'QAPTO',
-          style: TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2,
-          ),
+
+        child: Image.asset(
+          'assets/images/logo.png',
+
+          width: 380,
         ),
       ),
     );
@@ -118,15 +118,11 @@ class AuthChoiceScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
-                  'QAPTO',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
-                  ),
-                ),
+              Image.asset(
+              'assets/images/logo.png',
+
+              width: 480,
+               ),
                 const SizedBox(height: 12),
                 const Text(
                   'Smart Business Connections',

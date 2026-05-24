@@ -1,11 +1,16 @@
+import 'dart:js' as js;
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:flutter/foundation.dart';
 
 class PaymentScreen extends StatefulWidget {
+
   final String matchId;
+
   final double totalAmount;
+
   final double platformFee;
 
   const PaymentScreen({
@@ -27,9 +32,10 @@ class _PaymentScreenState
 
   @override
   void initState() {
+
     super.initState();
 
-    // ✅ ONLY MOBILE
+    // ✅ MOBILE ONLY
     if (!kIsWeb) {
 
       _razorpay = Razorpay();
@@ -52,7 +58,9 @@ class _PaymentScreenState
 
     if (amount <= 0) {
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
         const SnackBar(
           content: Text(
             "Invalid amount",
@@ -63,15 +71,35 @@ class _PaymentScreenState
       return;
     }
 
-    // ❌ BLOCK WEB
+    // ✅ WEB PAYMENT
     if (kIsWeb) {
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Web payment not supported yet",
-          ),
-        ),
+      js.context.callMethod(
+        'eval',
+
+        ["""
+          var options = {
+
+            key: 'rzp_test_SmoH9K7exjlZF4',
+
+            amount: ${(widget.totalAmount * 100).toInt()},
+
+            name: 'QAPTO',
+
+            description: 'Deal Payment',
+
+            handler: function (response) {
+
+              alert("Payment Successful");
+
+              window.location.reload();
+            }
+          };
+
+          var rzp = new Razorpay(options);
+
+          rzp.open();
+        """],
       );
 
       return;
@@ -124,6 +152,7 @@ class _PaymentScreenState
 
       ScaffoldMessenger.of(context)
           .showSnackBar(
+
         const SnackBar(
           content: Text(
             "Payment Successful",
@@ -146,6 +175,7 @@ class _PaymentScreenState
 
     ScaffoldMessenger.of(context)
         .showSnackBar(
+
       const SnackBar(
         content: Text(
           "Payment Failed",

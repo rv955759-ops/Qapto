@@ -90,14 +90,25 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                "Login to QAPTO",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 30),
+         Center(
+           child: Image.asset(
+           'assets/images/logo.png',
+
+           width: 380,
+           ),
+             ),
+
+                 const SizedBox(height: 4),
+
+                 const Text(
+             "Login to QAPTO",
+        style: TextStyle(
+        fontSize: 26,
+        fontWeight: FontWeight.bold,
+            ),
+            ),
+
+            const SizedBox(height: 30),
 
               // Email
               TextField(
